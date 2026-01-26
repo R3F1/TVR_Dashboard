@@ -3,118 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TV Dashboard System</title>
+    <title>TV Big Data Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-dark: #020617; /* Bardzo ciemne tło dla kontrastu na TV */
+            --bg-dark: #0f172a;
+            --table-header: #1e293b;
+            --row-even: #1e293b;
+            --row-odd: #0f172a;
+            --text-primary: #e2e8f0;
+            --highlight: #3b82f6;
         }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-dark);
-            /* Subtelne tło, żeby nie wypalało ekranu */
-            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 60%);
-            color: white;
+            color: var(--text-primary);
             height: 100vh;
             width: 100vw;
-            margin: 0;
-            overflow: hidden; /* Blokada scrollowania na TV */
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* Zegar z efektem neonu */
-        .neon-clock {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-            font-feature-settings: "tnum"; /* Stała szerokość cyfr */
+        /* Stylizacja scrollbara (ukryty, ale funkcjonalny) */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        /* HEADER */
+        .header-glow {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
-        /* Główny kontener na tabelę */
-        .tv-frame {
+        /* TABELA - SERCE DASHBOARDU */
+        .table-container {
             flex-grow: 1;
-            margin: 0 1.5vw 1.5vw 1.5vw; /* Marginesy responsywne */
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            position: relative;
+            overflow-y: auto; /* Przewijanie jeśli danych jest dużo */
+            padding: 0 20px 20px 20px;
         }
 
-        iframe {
+        table {
             width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
+            border-collapse: separate;
+            border-spacing: 0 8px; /* Odstęp między wierszami */
         }
 
-        /* Ukrycie paska przewijania (scrollbar) wewnątrz iframe */
-        /* Działa tylko jeśli domena jest ta sama, ale tutaj stylujemy kontener */
-        ::-webkit-scrollbar {
-            display: none;
+        thead th {
+            position: sticky;
+            top: 0;
+            background: var(--bg-dark); /* Tło nagłówka */
+            color: #94a3b8;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 20px;
+            text-align: left;
+            z-index: 10;
+            border-bottom: 2px solid #334155;
+        }
+
+        tbody tr {
+            background-color: var(--row-even);
+            transition: transform 0.2s;
+        }
+
+        /* Stylizacja komórek */
+        tbody td {
+            padding: 24px 20px; /* DUŻE ODSTĘPY */
+            font-size: 1.8rem; /* OGROMNA CZCIONKA DLA TV */
+            font-weight: 600;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Zaokrąglenia wierszy */
+        tbody tr td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; border-left: 1px solid rgba(255,255,255,0.05); }
+        tbody tr td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-right: 1px solid rgba(255,255,255,0.05); }
+
+        /* Wyróżnienie pierwszej kolumny */
+        tbody td:first-child {
+            color: var(--highlight);
+            font-weight: 800;
+        }
+
+        /* Responsywność dla bardzo dużych ekranów */
+        @media (min-width: 1920px) {
+            tbody td { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
 
-    <header class="flex-none h-[12vh] flex items-center justify-center relative px-8">
+    <header class="flex-none h-24 flex items-center justify-between px-10 bg-slate-900/50 border-b border-slate-800">
+        <div class="flex items-center gap-4">
+            <div class="h-4 w-4 bg-green-500 rounded-full animate-pulse shadow-[0_0_15px_#22c55e]"></div>
+            <h1 class="text-2xl font-bold text-slate-400 tracking-widest uppercase">Logistics Monitor</h1>
+        </div>
         
-        <div class="absolute left-8 flex items-center gap-3 opacity-60">
-            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></div>
-            <span class="text-sm font-semibold tracking-widest uppercase text-slate-400">Live Feed</span>
-        </div>
-
-        <div class="text-center z-10">
-            <h1 id="clock" class="text-5xl md:text-6xl font-black tracking-tight leading-none neon-clock">00:00</h1>
-            <p id="date" class="text-slate-400 text-lg md:text-xl font-medium mt-1 uppercase tracking-wide opacity-80"></p>
-        </div>
-
-        <div class="absolute right-8">
-             <button onclick="window.location.reload()" class="bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors text-white/70">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-            </button>
+        <div class="text-right">
+            <div id="clock" class="text-5xl font-black header-glow leading-none">00:00</div>
+            <div id="date" class="text-slate-400 text-sm font-semibold uppercase tracking-widest mt-1"></div>
         </div>
     </header>
 
-    <div class="tv-frame">
-        <iframe 
-            id="sheet-frame"
-            src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTLj9I25auqf26IBHTeDVVQ4K45_y8lx-kAnJXvVDkSYRacfyT9fWJ6SzOnCxn9SAFzn2Pw-7M3y9Bc/pubhtml?widget=true&amp;headers=false&amp;chrome=false"
-            allowfullscreen>
-        </iframe>
+    <div class="table-container" id="data-container">
+        <div class="flex h-full items-center justify-center text-slate-500 animate-pulse text-2xl">
+            Pobieranie danych z chmury...
+        </div>
     </div>
 
     <script>
-        function updateClock() {
-            const now = new Date();
-            
-            // Formatowanie godziny (HH:MM:SS)
-            const timeString = now.toLocaleTimeString('pl-PL', { 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit' 
-            });
-            
-            // Formatowanie daty (Dzień tygodnia, dzień miesiąc)
-            const dateString = now.toLocaleDateString('pl-PL', { 
-                weekday: 'long', 
-                day: 'numeric', 
-                month: 'long' 
-            });
+        // === 1. KONFIGURACJA ===
+        // Twój link, ale zmieniony na format CSV (Output=csv)
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTLj9I25auqf26IBHTeDVVQ4K45_y8lx-kAnJXvVDkSYRacfyT9fWJ6SzOnCxn9SAFzn2Pw-7M3y9Bc/pub?output=csv';
 
-            document.getElementById('clock').innerText = timeString;
-            document.getElementById('date').innerText = dateString;
+        // === 2. FUNKCJE POBIERANIA DANYCH ===
+        async function fetchData() {
+            try {
+                const response = await fetch(SHEET_URL);
+                const data = await response.text();
+                parseAndRender(data);
+            } catch (error) {
+                console.error('Błąd pobierania:', error);
+            }
         }
 
-        // Automatyczne odświeżanie strony co 10 minut (dla pewności aktualizacji danych na TV)
-        setTimeout(() => {
-            window.location.reload();
-        }, 600000); // 600000 ms = 10 minut
+        // Prosty parser CSV (zakłada standardowe dane)
+        function parseAndRender(csvText) {
+            const rows = csvText.split('\n').map(row => row.split(',')); // Prosty split (uwaga na przecinki w treści)
+            
+            // Usuwamy puste wiersze
+            const cleanRows = rows.filter(row => row.length > 1 && row[0] !== '');
 
+            if (cleanRows.length === 0) return;
+
+            // Pierwszy wiersz to nagłówki
+            const headers = cleanRows[0];
+            const dataRows = cleanRows.slice(1);
+
+            let html = '<table class="w-full"><thead><tr>';
+            
+            // Generuj nagłówki
+            headers.forEach(header => {
+                // Usuwamy cudzysłowy jeśli są
+                const text = header.replace(/^"|"$/g, ''); 
+                html += `<th>${text}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            // Generuj wiersze
+            dataRows.forEach(row => {
+                html += 'tr class="hover:bg-slate-800 transition-colors">';
+                row.forEach(cell => {
+                    const text = cell.replace(/^"|"$/g, '');
+                    html += `<td>${text}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('data-container').innerHTML = html;
+        }
+
+        // === 3. ZEGAR ===
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('date').innerText = now.toLocaleDateString('pl-PL', {weekday: 'long', day: 'numeric', month: 'long'});
+        }
+
+        // === 4. AUTO-SCROLL (OPCJONALNE - DLA TV) ===
+        // Jeśli tabela jest dłuższa niż ekran, powoli przewija w dół i wraca
+        function autoScroll() {
+            const container = document.getElementById('data-container');
+            // Logika przewijania może być dodana tutaj jeśli potrzebna
+        }
+
+        // Start
         setInterval(updateClock, 1000);
         updateClock();
+        fetchData(); // Pierwsze pobranie
+        setInterval(fetchData, 60000); // Odświeżanie danych co 60 sekund
     </script>
 </body>
 </html>

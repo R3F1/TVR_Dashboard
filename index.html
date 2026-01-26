@@ -3,141 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC Review Dashboard</title>
+    <title>HC Professional Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
         :root {
-            --bg-app: #111827; /* Ciemne tło strony dla TV */
+            --bg-app: #0f172a; /* Głęboki granat/czarny */
+            --card-bg: #1e293b; /* Jaśniejszy kafel */
+            --border-color: #334155;
             
-            /* Kolory z Twojego obrazka Excela */
-            --excel-header-blue: #cfe2f3; 
-            --excel-sub-orange: #fce5cd;
-            --excel-row-diff: #d9ead3;
-            --excel-green-title: #d9ead3;
-            
-            --text-dark: #000000;
+            /* Kolory akcentów */
+            --accent-blue: #3b82f6;
+            --accent-orange: #f97316;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-app);
+            /* Subtelny gradient tła dla głębi na TV */
+            background-image: radial-gradient(at 50% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 50%);
             color: white;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
+            overflow: hidden; /* Kiosk mode na TV */
             display: flex;
             flex-direction: column;
         }
 
-        /* Siatka kart */
+        /* === NAGŁÓWEK === */
+        .header-glow {
+            text-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+        }
+        .title-gradient {
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* === SIATKA KART === */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px;
+            /* Responsywne kolumny, ale duże kafelki na TV */
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 24px;
+            padding: 30px;
             height: 100%;
             align-content: start;
+            overflow-y: auto; /* Przewijanie tylko w obszarze kart */
         }
+        /* Ukryty scrollbar */
+        .cards-grid::-webkit-scrollbar { width: 0; }
 
-        /* Styl pojedycznej karty (jeden CPL) */
+        /* === STYL KARTY === */
         .data-card {
-            background: white;
-            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease;
         }
+        /* Delikatne powiększenie dla efektu premium */
+        .data-card:hover { transform: translateY(-5px); border-color: var(--accent-blue); }
 
-        /* 1. Nagłówek karty (CPL...) - Niebieski */
+        /* 1. Nagłówek Karty (CPL) */
         .card-header {
-            background-color: var(--excel-header-blue);
-            color: var(--text-dark);
-            padding: 15px;
-            text-align: center;
+            background: linear-gradient(to right, rgba(59, 130, 246, 0.1), transparent);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             font-weight: 800;
-            font-size: 1.4rem;
-            border-bottom: 1px solid #999;
+            font-size: 1.3rem;
+            color: var(--accent-blue);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        /* 2. Sekcja Total / Actual - Pomarańczowa */
+        /* 2. Podtytuły (Total/Actual) */
         .card-subheaders {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            background-color: var(--excel-sub-orange);
-            border-bottom: 1px solid #ccc;
+            background: rgba(249, 115, 22, 0.05); /* Lekki pomarańcz */
+            border-bottom: 1px solid var(--border-color);
         }
         .subheader-item {
-            padding: 8px;
-            text-align: center;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             font-weight: 600;
-            color: #444;
+            color: var(--accent-orange);
             font-size: 0.9rem;
             text-transform: uppercase;
-            border-right: 1px solid rgba(0,0,0,0.1);
+            letter-spacing: 0.05em;
         }
+        .subheader-item:first-child { border-right: 1px solid var(--border-color); }
 
-        /* 3. Wartości Liczbowe */
+        /* 3. Wartości */
         .card-values {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            background: white;
-            padding: 20px 0;
+            padding: 30px 0;
+            background: linear-gradient(to bottom, var(--card-bg), rgba(15, 23, 42, 0.5));
         }
         .value-item {
             text-align: center;
-            font-family: 'Chakra Petch', sans-serif; /* Techniczny font do liczb */
-            font-size: 3.5rem;
+            font-family: 'Chakra Petch', monospace;
+            font-size: 4.5rem; /* OGROMNE LICZBY */
             font-weight: 700;
-            color: #1f2937;
+            color: white;
             line-height: 1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        /* 4. Stopka (Difference) - Zielona */
+        /* 4. Stopka (Różnica) */
         .card-footer {
-            background-color: var(--excel-row-diff);
-            color: var(--text-dark);
-            padding: 12px;
+            background: rgba(16, 185, 129, 0.05); /* Lekka zieleń */
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: 700;
-            border-top: 1px solid #ccc;
+            border-top: 1px solid var(--border-color);
         }
-        .diff-label { font-size: 1rem; text-transform: uppercase; }
-        .diff-value { font-size: 1.8rem; font-weight: 800; }
+        .diff-label { 
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.9rem; text-transform: uppercase; color: #94a3b8; 
+        }
+        .diff-value { font-size: 2rem; font-weight: 800; font-family: 'Chakra Petch', monospace;}
 
-        /* Kolorowanie różnicy */
-        .diff-pos { color: #166534; } /* Ciemna zieleń */
-        .diff-neg { color: #dc2626; } /* Czerwień */
-        .diff-zero { color: #555; }
-
+        .diff-pos { color: var(--accent-green); }
+        .diff-neg { color: var(--accent-red); }
+        .diff-zero { color: #64748b; }
     </style>
 </head>
 <body>
 
-    <header class="h-20 flex items-center justify-between px-8 bg-slate-900 border-b border-slate-700">
-        <h1 class="text-3xl font-bold text-green-400 tracking-wider">HC REVIEW DASHBOARD</h1>
-        <div class="text-right">
-            <div id="clock" class="text-3xl font-mono font-bold">00:00</div>
-            <div id="date" class="text-xs text-slate-400 uppercase"></div>
+    <header class="flex-none h-32 px-10 flex items-center justify-between bg-slate-900/80 backdrop-blur-xl border-b border-slate-800 z-10 relative">
+        
+        <div class="flex items-center gap-4 w-1/4">
+            <div class="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                <i data-lucide="layout-dashboard" class="w-8 h-8 text-blue-400"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-black tracking-tight title-gradient">HC REVIEW</h1>
+                <p class="text-sm text-slate-400 font-medium tracking-widest uppercase">Operations Dashboard</p>
+            </div>
+        </div>
+
+        <div class="flex-1 text-center">
+            <div id="clock" class="text-7xl font-bold font-mono header-glow text-white leading-none" style="font-family: 'Chakra Petch';">00:00:00</div>
+            <div id="date" class="text-slate-400 text-lg font-medium uppercase tracking-[0.2em] mt-2"></div>
+        </div>
+
+        <div class="w-1/4 flex justify-end items-center gap-2 opacity-70">
+            <span class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            <span class="text-sm font-semibold text-slate-300 tracking-widest">LIVE DATA</span>
         </div>
     </header>
 
-    <div id="app-container" class="cards-grid">
-        <div class="text-white text-xl p-10">Ładowanie danych...</div>
-    </div>
+    <main id="app-container" class="cards-grid">
+        <div class="col-span-full flex h-full items-center justify-center flex-col gap-4 text-slate-500 opacity-50">
+            <i data-lucide="loader-2" class="w-12 h-12 animate-spin"></i>
+            <span class="text-xl font-light tracking-widest">SYNCHRONIZACJA DANYCH...</span>
+        </div>
+    </main>
 
     <script>
-        // === ZMIEŃ LINK PONIŻEJ NA SWÓJ (z końcówką ?output=csv) ===
-        // Ważne: Twój arkusz musi być udostępniony jako "Każdy mający link" -> Przeglądający
+        // === KONFIGURACJA LINKU CSV ===
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTLj9I25auqf26IBHTeDVVQ4K45_y8lx-kAnJXvVDkSYRacfyT9fWJ6SzOnCxn9SAFzn2Pw-7M3y9Bc/pub?output=csv';
 
+        // === LOGIKA DANYCH ===
         async function loadData() {
             try {
-                const res = await fetch(CSV_URL + '&t=' + Date.now()); // cache busting
+                const res = await fetch(CSV_URL + '&t=' + Date.now());
                 const text = await res.text();
                 parseData(text);
             } catch (e) {
@@ -146,54 +195,45 @@
         }
 
         function parseData(csvText) {
-            // Prosty parser CSV
             const rows = csvText.split('\n').map(row => row.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
             
-            // UWAGA: Tutaj dostosowujemy logikę do Twojego zrzutu ekranu.
-            // Zakładam taką strukturę CSV po eksporcie złączonych komórek:
-            // Row 0: "HC review", , , , ... (Tytuł)
-            // Row 1: "CPL16601/TVR", "", "CPL16606/MIK", "", ... (Nagłówki grup co drugą kolumnę)
-            // Row 2: "Total", "Actual", "Total", "Actual" ...
-            // Row 3: 14, 15, 2, 2 ... (Wartości)
-            // Row 4: "Difference", 1, "Difference", 0 ...
-            
-            // Znajdźmy wiersz z nagłówkami grup (szukamy wiersza zawierającego "CPL")
+            // Logika dopasowania do struktury Twojego arkusza (tytuł, nagłówki grup, nagłówki kolumn, wartości, różnica)
             let headerRowIndex = rows.findIndex(r => r.some(c => c.includes('CPL')));
-            if (headerRowIndex === -1) headerRowIndex = 1; // Fallback
+            if (headerRowIndex === -1) headerRowIndex = 1; 
 
-            const groupRow = rows[headerRowIndex];     // np. CPL...
-            const subHeaderRow = rows[headerRowIndex + 1]; // Total / Actual
+            const groupRow = rows[headerRowIndex];     // CPL...
+            // const subHeaderRow = rows[headerRowIndex + 1]; // Total / Actual (nieużywane, bo wpisane na sztywno z ikonami)
             const valuesRow = rows[headerRowIndex + 2];    // Liczby
-            const diffRow = rows[headerRowIndex + 3];      // Difference row
+            const diffRow = rows[headerRowIndex + 3];      // Wiersz różnicy
 
             const container = document.getElementById('app-container');
-            container.innerHTML = ''; // Wyczyść
+            container.innerHTML = ''; 
 
-            // Iterujemy co 2 kolumny, bo każda grupa zajmuje 2 kolumny (Total + Actual)
+            // Iteracja co 2 kolumny (grupa Total+Actual)
             for (let i = 0; i < groupRow.length - 1; i += 2) {
-                
-                // Pobieramy nazwę grupy. Jeśli pusta (przez merge), bierzemy z poprzedniej lub bieżącej
                 let title = groupRow[i];
-                if (!title) continue; // Pomiń puste
+                if (!title || title === "") continue; 
 
-                // Pobieramy dane
                 const valTotal = valuesRow[i] || "0";
                 const valActual = valuesRow[i+1] || "0";
+                let diffVal = diffRow[i+1] || diffRow[i] || "0"; // Szukamy wartości różnicy w kolumnie 2 lub 1
                 
-                // Różnica (zwykle w CSV po merge komórek "Difference" jest w col 1, a wartość w col 2)
-                // Ale na zdjęciu widać Difference pod Total i Wartość pod Actual.
-                // Sprawdzamy gdzie jest liczba.
-                let diffVal = diffRow[i+1]; 
-                
-                // Generujemy HTML Karty
                 const card = document.createElement('div');
                 card.className = 'data-card';
+                // Tutaj budujemy HTML karty z nowymi ikonami
                 card.innerHTML = `
-                    <div class="card-header">${title}</div>
+                    <div class="card-header">
+                        <i data-lucide="layers" class="w-6 h-6 opacity-70"></i>
+                        ${title}
+                    </div>
                     
                     <div class="card-subheaders">
-                        <div class="subheader-item">Total</div>
-                        <div class="subheader-item">Actual</div>
+                        <div class="subheader-item">
+                            <i data-lucide="users" class="w-4 h-4"></i> Total
+                        </div>
+                        <div class="subheader-item">
+                            <i data-lucide="user-check" class="w-4 h-4"></i> Actual
+                        </div>
                     </div>
 
                     <div class="card-values">
@@ -202,34 +242,41 @@
                     </div>
 
                     <div class="card-footer">
-                        <span class="diff-label">Różnica</span>
+                        <span class="diff-label">
+                            <i data-lucide="trending-up" class="w-5 h-5"></i> Różnica
+                        </span>
                         <span class="diff-value ${getDiffColor(diffVal)}">${diffVal}</span>
                     </div>
                 `;
                 container.appendChild(card);
             }
+            // Ważne: Inicjalizacja ikon Lucide po dodaniu nowych elementów do DOM
+            lucide.createIcons();
         }
 
         function getDiffColor(val) {
             const num = parseInt(val);
-            if (isNaN(num)) return '';
-            if (num > 0) return 'diff-pos'; // Zielony
-            if (num < 0) return 'diff-neg'; // Czerwony
+            if (isNaN(num)) return 'diff-zero';
+            if (num > 0) return 'diff-pos';
+            if (num < 0) return 'diff-neg';
             return 'diff-zero';
         }
 
-        // Zegar
+        // === ZEGAR (Centralny i Wielki) ===
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('pl-PL', {hour:'2-digit', minute:'2-digit'});
-            document.getElementById('date').innerText = now.toLocaleDateString('pl-PL', {weekday:'short', day:'numeric', month:'short'});
+            // Czas z sekundami
+            document.getElementById('clock').innerText = now.toLocaleTimeString('pl-PL', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+            // Pełna data
+            document.getElementById('date').innerText = now.toLocaleDateString('pl-PL', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
         }
 
-        setInterval(loadData, 10000); // Odświeżanie danych co 10 sek
-        setInterval(updateClock, 1000);
+        // === INICJALIZACJA ===
+        setInterval(loadData, 15000); // Odświeżanie danych co 15 sek
+        setInterval(updateClock, 1000); // Zegar co sekundę
         loadData();
         updateClock();
-
+        lucide.createIcons(); // Pierwsze ładowanie ikon statycznych
     </script>
 </body>
 </html>

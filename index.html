@@ -3,6 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Data Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            width: 95vw;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .header {
+            padding: 24px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.5);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            box-shadow: 0 0 12px #10b981;
+        }
+
+        .iframe-wrapper {
+            flex-grow: 1;
+            padding: 20px;
+            background: transparent;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            border: none;
+            background: white;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* Stylizacja scrollbara dla nowoczesnego wyglądu */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-card">
+        <div class="header">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Live Analytics</h1>
+                <p class="text-sm text-slate-500 font-medium flex items-center mt-1">
+                    <span class="status-dot"></span> Arkusz Google zsynchronizowany
+                </p>
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="window.location.reload()" class="bg-white hover:bg-slate-50 text-slate-600 px-4 py-2 rounded-xl border border-slate-200 text-sm font-semibold transition-all shadow-sm flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                    Odśwież
+                </button>
+                <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTLj9I25auqf26IBHTeDVVQ4K45_y8lx-kAnJXvVDkSYRacfyT9fWJ6SzOnCxn9SAFzn2Pw-7M3y9Bc/pubhtml" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-all shadow-md hover:shadow-indigo-200 flex items-center gap-2">
+                    Eksportuj
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l9 9M16 7l-9 9"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="iframe-wrapper">
+            <iframe 
+                src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTLj9I25auqf26IBHTeDVVQ4K45_y8lx-kAnJXvVDkSYRacfyT9fWJ6SzOnCxn9SAFzn2Pw-7M3y9Bc/pubhtml?widget=true&amp;headers=false&amp;chrome=false">
+            </iframe>
+        </div>
+
+        <div class="px-10 py-4 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-400 uppercase tracking-widest font-bold">
+            <span>Powered by Google Sheets API</span>
+            <span>Ostatnia aktualizacja: <span id="time">teraz</span></span>
+        </div>
+    </div>
+
+    <script>
+        // Prosty skrypt ustawiający aktualną godzinę
+        const now = new Date();
+        document.getElementById('time').innerText = now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0');
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Dashboard | Dane Google Sheets</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -2278,4 +2403,5 @@ function filterTable() {
         
 </script>
 </html>
+
 

@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC TV Dashboard Safe Mode</title>
+    <title>HC TV Dashboard - Target Mode</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
         :root {
@@ -14,13 +13,11 @@
             --card-bg: #1e293b; 
             --border-color: #334155;
             --accent-blue: #60a5fa;
-            --accent-orange: #fb923c;
-            --accent-green: #34d399;
-            --accent-red: #f87171;
+            --text-muted: #94a3b8;
         }
 
         body {
-            font-family: 'Inter', sans-serif; /* Domyślna czcionka */
+            font-family: 'Inter', 'Arial', sans-serif;
             background-color: var(--bg-app);
             color: white;
             height: 100vh;
@@ -30,10 +27,10 @@
             flex-direction: column;
         }
 
-        /* HEADER - BEZPIECZNY STYL */
+        /* HEADER - BEZPIECZNY STYL (ten co działał) */
         header {
-            height: 120px;
-            background: #0f172a; /* Ciemne tło bez przezroczystości (bezpieczniej) */
+            height: 110px;
+            background: #0f172a;
             border-bottom: 2px solid #334155;
             display: flex;
             align-items: center;
@@ -43,131 +40,151 @@
             z-index: 50;
         }
 
-        /* Sekcja Zegara - PANCERNA */
+        /* ZEGAR */
         .clock-container {
             text-align: center;
             position: absolute;
             left: 50%;
             top: 50%;
-            transform: translate(-50%, -50%); /* Centrowanie absolutne - działa zawsze */
+            transform: translate(-50%, -50%);
             width: 400px;
         }
-
         #clock {
-            /* Używamy Arial/Verdana bo są na każdym TV */
             font-family: 'Verdana', 'Arial', sans-serif; 
-            font-size: 80px; /* Duży rozmiar */
+            font-size: 70px;
             font-weight: bold;
-            color: #ffffff; /* Czysta biel */
+            color: #ffffff;
             line-height: 1;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 0px #000000; /* Prosty cień dla kontrastu */
-            display: block;
+            text-shadow: 2px 2px 0px #000000;
         }
-
         #date {
             font-family: 'Arial', sans-serif;
-            font-size: 16px;
+            font-size: 14px;
             color: #94a3b8;
             text-transform: uppercase;
-            margin-top: 5px;
             font-weight: bold;
+            margin-top: 5px;
         }
 
         /* GRID KART */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* Mniejsze minimum dla bezpieczeństwa */
-            gap: 15px; /* Mniejszy odstęp */
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
             padding: 20px;
             overflow-y: auto;
-            height: calc(100vh - 120px);
+            height: calc(100vh - 110px);
         }
         .cards-grid::-webkit-scrollbar { width: 0; }
 
-        /* KARTA */
+        /* NOWY STYL KARTY */
         .data-card {
             background: var(--card-bg);
-            border: 2px solid var(--border-color); /* Grubsza ramka */
+            border: 2px solid var(--border-color);
             border-radius: 12px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             height: 100%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
 
+        /* 1. TYTUŁ (Na górze) */
         .card-header {
-            background: #1e293b;
+            background: #172033;
             padding: 0 10px;
-            height: 60px;
+            height: 50px; /* Nieco mniejszy nagłówek */
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-weight: 800;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--accent-blue);
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
             line-height: 1.1;
         }
 
-        .card-subheaders {
-            display: flex; /* Flex zamiast Grid (bezpieczniej dla starych TV) */
-            height: 35px;
-            border-bottom: 1px solid var(--border-color);
-            background: #2d3748;
-        }
-        .subheader-item {
-            flex: 1; /* Połowa szerokości */
+        /* 2. GŁÓWNA LICZBA (ACTUAL) */
+        .card-hero {
+            flex-grow: 1; /* Zajmuje całe wolne miejsce */
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            color: var(--accent-orange);
+            background: linear-gradient(to bottom, #1e293b, #0f172a);
+            padding: 10px 0;
+        }
+        
+        .hero-label {
             font-size: 0.9rem;
             text-transform: uppercase;
-            border-right: 1px solid var(--border-color);
+            color: #64748b;
+            font-weight: 700;
+            margin-bottom: -10px; /* Zbliżamy napis do liczby */
         }
 
-        .card-values {
-            display: flex; /* Flex zamiast Grid */
-            flex-grow: 1;
-            align-items: center;
-            background: #0f172a;
-        }
-        .value-item {
-            flex: 1;
-            text-align: center;
-            /* Chakra Petch jeśli zadziała, jak nie to Arial */
-            font-family: 'Chakra Petch', 'Arial', sans-serif; 
-            font-size: 5rem; 
+        .hero-value {
+            font-family: 'Chakra Petch', 'Arial', sans-serif;
+            font-size: 7.5rem; /* OGROMNA */
             font-weight: 800;
             color: #ffffff;
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
 
+        /* 3. STOPKA (CEL i RÓŻNICA) */
         .card-footer {
-            height: 50px;
-            padding: 0 15px;
+            height: 65px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
             border-top: 1px solid var(--border-color);
             background: #1e293b;
         }
+
+        .footer-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
         
-        .diff-value { font-size: 1.8rem; font-weight: 800; }
+        /* Prawa strona stopki ma lewy border */
+        .footer-item.right {
+            border-left: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .footer-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .footer-value {
+            font-family: 'Chakra Petch', 'Arial', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+        }
+
+        /* Kolory różnicy */
         .diff-pos { color: #34d399; }
         .diff-neg { color: #f87171; }
-        .diff-zero { color: #64748b; }
+        .diff-zero { color: #94a3b8; }
 
     </style>
 </head>
 <body>
 
     <header>
-        <div style="width: 250px;"> <div class="flex items-center gap-3">
+        <div style="width: 250px;">
+            <div class="flex items-center gap-3">
                 <div class="p-2 bg-blue-900 rounded border border-blue-500">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                 </div>
                 <h1 class="text-2xl font-black text-blue-400 italic">HC REVIEW</h1>
             </div>
@@ -195,42 +212,29 @@
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTLj9I25auqf26IBHTeDVVQ4K45_y8lx-kAnJXvVDkSYRacfyT9fWJ6SzOnCxn9SAFzn2Pw-7M3y9Bc/pub?output=csv';
 
-        // === 1. ZEGAR (STARY STYL - JS ES5) ===
-        // To zadziała nawet na mikrofalówce
+        // ZEGAR
         function updateClockSafe() {
             var now = new Date();
-            
-            // Godzina
             var hours = now.getHours();
             if (hours < 10) hours = "0" + hours;
-            
             var minutes = now.getMinutes();
             if (minutes < 10) minutes = "0" + minutes;
-            
             document.getElementById('clock').innerHTML = hours + ":" + minutes;
 
-            // Data (prosta tablica zamiast toLocaleDateString)
             var days = ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'];
             var months = ['Stycznia', 'Lutego', 'Marca', 'Kwietnia', 'Maja', 'Czerwca', 'Lipca', 'Sierpnia', 'Września', 'Października', 'Listopada', 'Grudnia'];
-            
-            var dayName = days[now.getDay()];
-            var dayNum = now.getDate();
-            var monthName = months[now.getMonth()];
-            
-            document.getElementById('date').innerHTML = dayName + ", " + dayNum + " " + monthName;
+            document.getElementById('date').innerHTML = days[now.getDay()] + ", " + now.getDate() + " " + months[now.getMonth()];
         }
 
-        // === 2. DANE ===
+        // DANE
         async function loadData() {
             try {
-                // Dodajemy losowy numer żeby TV nie trzymał starych danych w pamięci (cache)
                 var cacheBuster = Math.floor(Math.random() * 100000);
                 const res = await fetch(CSV_URL + '&t=' + cacheBuster);
                 const text = await res.text();
                 parseData(text);
             } catch (e) {
                 console.error("Błąd:", e);
-                // W razie błędu nie czyścimy ekranu, zostają stare dane
             }
         }
 
@@ -251,28 +255,33 @@
                 let title = groupRow[i];
                 if (!title || title === "") continue; 
 
-                const valTotal = valuesRow[i] || "0";
+                // ZMIANA LOGIKI:
+                // valuesRow[i] to TOTAL (CEL)
+                // valuesRow[i+1] to ACTUAL (WYNIK)
+                const valTarget = valuesRow[i] || "0"; 
                 const valActual = valuesRow[i+1] || "0";
                 
                 let diffVal = diffRow[i+1];
                 if (!diffVal || diffVal === "") diffVal = diffRow[i] || "0";
                 
-                // Uproszczony HTML bez ikon Lucide wewnątrz pętli (dla wydajności TV)
                 const card = document.createElement('div');
                 card.className = 'data-card';
                 card.innerHTML = `
                     <div class="card-header">${title}</div>
-                    <div class="card-subheaders">
-                        <div class="subheader-item">Total</div>
-                        <div class="subheader-item">Actual</div>
+                    
+                    <div class="card-hero">
+                        <div class="hero-value">${valActual}</div>
                     </div>
-                    <div class="card-values">
-                        <div class="value-item">${valTotal}</div>
-                        <div class="value-item">${valActual}</div>
-                    </div>
+
                     <div class="card-footer">
-                        <span class="diff-label" style="color: #94a3b8; font-weight: bold; font-size: 14px;">RÓŻNICA</span>
-                        <span class="diff-value ${getDiffColor(diffVal)}">${diffVal}</span>
+                        <div class="footer-item">
+                            <span class="footer-label">CEL (Total)</span>
+                            <span class="footer-value">${valTarget}</span>
+                        </div>
+                        <div class="footer-item right">
+                            <span class="footer-label">RÓŻNICA</span>
+                            <span class="footer-value ${getDiffColor(diffVal)}">${diffVal}</span>
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
@@ -287,11 +296,8 @@
             return 'diff-zero';
         }
 
-        // Uruchamiamy zegar od razu, nie czekając na dane
         setInterval(updateClockSafe, 1000);
         updateClockSafe();
-
-        // Dane co 15 sekund
         setInterval(loadData, 15000);
         loadData();
     </script>

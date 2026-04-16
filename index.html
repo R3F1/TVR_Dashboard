@@ -76,16 +76,16 @@
             overflow: hidden;
         }
 
-        /* LEWY PANEL (KARTY DANYCH) */
+        /* LEWY PANEL (KARTY DANYCH) - Zmiana na Flexbox */
         .left-panel {
             flex: 1;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 kolumny dla TVR, MNT, MIK, PD */
+            display: flex;
+            flex-wrap: wrap;
             gap: 20px;
-            align-content: start;
-            overflow-y: auto;
+            /* Rzędy idealnie podzielą między siebie dostępną wysokość */
+            align-content: stretch; 
+            overflow: hidden;
         }
-        .left-panel::-webkit-scrollbar { width: 0; }
 
         /* PRAWY PANEL (KONTAKTY) */
         .right-panel {
@@ -95,9 +95,10 @@
             gap: 15px;
             border-left: 2px solid var(--border-color);
             padding-left: 20px;
-            overflow-y: auto;
+            /* Wyśrodkowanie kontaktów w pionie dla lepszego balansu wizualnego */
+            justify-content: center; 
+            overflow: hidden;
         }
-        .right-panel::-webkit-scrollbar { width: 0; }
 
         .contacts-header {
             font-size: 1.2rem;
@@ -106,7 +107,7 @@
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 5px;
+            margin-bottom: 15px;
         }
 
         .contact-card {
@@ -139,7 +140,11 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 350px; /* Zwiększona wysokość, żeby wypełniały przestrzeń */
+            
+            /* Karty ułożą się 3 na górze i 2 na dole wypełniając całą lukę */
+            flex: 1 1 calc(33.333% - 20px); 
+            min-width: 300px;
+            
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
 
@@ -166,6 +171,7 @@
             background: linear-gradient(to bottom, #1e293b, #0f172a);
             padding: 10px 0;
             position: relative;
+            min-height: 0; /* Zabezpieczenie dla dynamicznej wysokości */
         }
 
         .hero-label-top {
@@ -179,7 +185,7 @@
 
         .hero-value {
             font-family: 'Chakra Petch', 'Arial', sans-serif;
-            font-size: 8rem;
+            font-size: clamp(5rem, 7vw, 8rem); /* Responsywny, duży font */
             font-weight: 800;
             color: #ffffff;
             line-height: 1;
@@ -224,15 +230,9 @@
         }
 
         /* Style dla sekcji Absence */
-        .absence-ok {
-            background-color: #16a34a; /* Zielony z obrazka */
-        }
-        .absence-bad {
-            background-color: #ef4444; /* Czerwony przy braku ludzi */
-        }
-        .absence-neutral {
-            background-color: #475569; /* Szary fallback */
-        }
+        .absence-ok { background-color: #16a34a; }
+        .absence-bad { background-color: #ef4444; }
+        .absence-neutral { background-color: #475569; }
         
         .absence-ok .footer-label, 
         .absence-bad .footer-label {
@@ -268,14 +268,14 @@
 
     <div class="layout-container">
         <main id="app-container" class="left-panel">
-            <div style="grid-column: 1 / -1; color: #64748b; text-align: center; margin-top: 50px; font-size: 24px;">
+            <div style="width: 100%; color: #64748b; text-align: center; margin-top: 50px; font-size: 24px;">
                 WCZYTYWANIE DANYCH...
             </div>
         </main>
 
         <aside id="contacts-container" class="right-panel">
             <div class="contacts-header">Lista Kontaktów</div>
-            </aside>
+        </aside>
     </div>
 
     <script>
@@ -293,6 +293,7 @@
 
         function renderContacts() {
             const container = document.getElementById('contacts-container');
+            // Zostawiamy w spokoju nagłówek "Lista Kontaktów", dopisujemy pod nim karty
             contactsList.forEach(contact => {
                 const card = document.createElement('div');
                 card.className = 'contact-card';
@@ -333,7 +334,7 @@
         function parseData(csvText) {
             const rows = csvText.split('\n').map(row => row.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
             
-            // Szuka wiersza nagłówkowego (teraz szuka CPL lub TVR)
+            // Szuka wiersza nagłówkowego
             let headerRowIndex = rows.findIndex(r => r.some(c => c.includes('CPL') || c.includes('TVR')));
             if (headerRowIndex === -1) headerRowIndex = 1; 
 
@@ -381,7 +382,7 @@
             }
         }
 
-        // Zwraca klasę z odpowiednim tłem na podstawie liczby Absence
+        // Zwraca klasę z odpowiednim tłem
         function getAbsenceClass(val) {
             const num = parseInt(val);
             if (isNaN(num)) return 'absence-neutral';

@@ -16,29 +16,59 @@
             --text-muted: #94a3b8;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', 'Arial', sans-serif;
             background-color: var(--bg-app);
             color: white;
             height: 100vh;
+            width: 100vw;
             margin: 0;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* HEADER */
+        /* HEADER - Oparty na VH/VW */
         header {
-            height: 110px;
+            height: 12vh;
             background: #0f172a;
-            border-bottom: 2px solid #334155;
+            border-bottom: 0.3vh solid #334155;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 30px;
+            padding: 0 3vw;
             position: relative;
             z-index: 50;
             flex-shrink: 0;
+        }
+
+        .header-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+        }
+        
+        .header-logo-icon {
+            padding: 1vh;
+            background: #1e3a8a;
+            border-radius: 0.5vh;
+            border: 0.2vh solid #3b82f6;
+        }
+        
+        .header-logo-icon svg {
+            width: 3.5vh;
+            height: 3.5vh;
+        }
+
+        .header-title {
+            font-size: 3vh;
+            font-weight: 900;
+            color: var(--accent-blue);
+            font-style: italic;
         }
 
         /* ZEGAR */
@@ -48,118 +78,134 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 400px;
         }
         #clock {
             font-family: 'Verdana', 'Arial', sans-serif; 
-            font-size: 70px;
+            font-size: 6.5vh;
             font-weight: bold;
             color: #ffffff;
             line-height: 1;
-            text-shadow: 2px 2px 0px #000000;
+            text-shadow: 0.2vh 0.2vh 0px #000000;
         }
         #date {
             font-family: 'Arial', sans-serif;
-            font-size: 14px;
+            font-size: 1.5vh;
             color: #94a3b8;
             text-transform: uppercase;
             font-weight: bold;
-            margin-top: 5px;
+            margin-top: 0.5vh;
+        }
+
+        /* STATUS ONLINE */
+        .status-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.8vw;
+        }
+        .status-text {
+            color: #4ade80;
+            font-weight: bold;
+            font-size: 2.2vh;
+        }
+        .status-dot {
+            width: 1.5vh; 
+            height: 1.5vh; 
+            background-color: #34d399; 
+            border-radius: 50%;
         }
 
         /* GŁÓWNY LAYOUT (PODZIAŁ EKRANU) */
         .layout-container {
             display: flex;
-            height: calc(100vh - 110px);
-            padding: 20px;
-            gap: 20px;
+            height: 88vh; /* 100vh - 12vh header */
+            padding: 2vh 2vw;
+            gap: 2vw;
             overflow: hidden;
         }
 
-        /* LEWY PANEL (KARTY DANYCH) - Zmiana na Flexbox */
+        /* LEWY PANEL (KARTY DANYCH) */
         .left-panel {
             flex: 1;
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-            /* Rzędy idealnie podzielą między siebie dostępną wysokość */
+            gap: 2vh 2vw;
             align-content: stretch; 
             overflow: hidden;
         }
 
         /* PRAWY PANEL (KONTAKTY) */
         .right-panel {
-            flex: 0 0 350px;
+            flex: 0 0 23vw; /* Sztywna szerokość w procentach */
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            border-left: 2px solid var(--border-color);
-            padding-left: 20px;
-            /* Wyśrodkowanie kontaktów w pionie dla lepszego balansu wizualnego */
+            gap: 1.5vh;
+            border-left: 0.2vw solid var(--border-color);
+            padding-left: 2vw;
             justify-content: center; 
             overflow: hidden;
         }
 
         .contacts-header {
-            font-size: 1.2rem;
+            font-size: 2vh;
             font-weight: 800;
             color: var(--text-muted);
             text-align: center;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
+            letter-spacing: 0.2vw;
+            margin-bottom: 1vh;
         }
 
         .contact-card {
             background: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
+            border: 0.2vh solid var(--border-color);
+            border-radius: 1vh;
+            padding: 1.5vh 1vw;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0.5vh 1vh -0.2vh rgba(0, 0, 0, 0.5);
         }
         .contact-role {
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 1.6vh;
             color: var(--accent-blue);
-            margin-bottom: 8px;
+            margin-bottom: 0.5vh;
         }
         .contact-phone {
             font-family: 'Chakra Petch', sans-serif;
-            font-size: 1.6rem;
+            font-size: 2.8vh;
             font-weight: 700;
             color: white;
-            letter-spacing: 1px;
+            letter-spacing: 0.1vw;
         }
 
         /* KARTY DANYCH */
         .data-card {
             background: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border: 0.2vh solid var(--border-color);
+            border-radius: 1.5vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             
-            /* Karty ułożą się 3 na górze i 2 na dole wypełniając całą lukę */
-            flex: 1 1 calc(33.333% - 20px); 
-            min-width: 300px;
+            /* Dzieli przestrzeń - jeśli są 3 w rzędzie, biorą ~33%, jeśli 2, biorą 50% */
+            flex: 1 1 calc(33.333% - 1.5vw); 
+            min-width: 20vw;
             
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0.5vh 1vh -0.2vh rgba(0, 0, 0, 0.5);
         }
 
         .card-header {
             background: #172033;
-            padding: 0 10px;
-            height: 60px;
+            padding: 0 1vw;
+            height: 6vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-weight: 800;
-            font-size: 1.4rem;
+            font-size: 2.2vh;
             color: var(--accent-blue);
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 0.2vh solid var(--border-color);
         }
 
         .card-hero {
@@ -169,34 +215,34 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(to bottom, #1e293b, #0f172a);
-            padding: 10px 0;
             position: relative;
-            min-height: 0; /* Zabezpieczenie dla dynamicznej wysokości */
+            min-height: 0;
         }
 
         .hero-label-top {
             position: absolute;
-            top: 15px;
-            font-size: 1rem;
+            top: 1.5vh;
+            font-size: 1.8vh;
             color: #64748b;
             font-weight: 700;
             text-transform: uppercase;
         }
 
+        /* OGROMNA CZCIONKA SKALUJĄCA SIĘ Z WYSOKOŚCIĄ TELEWIZORA */
         .hero-value {
             font-family: 'Chakra Petch', 'Arial', sans-serif;
-            font-size: clamp(5rem, 7vw, 8rem); /* Responsywny, duży font */
+            font-size: 16vh; 
             font-weight: 800;
             color: #ffffff;
             line-height: 1;
-            text-shadow: 0 0 20px rgba(255,255,255,0.1);
+            text-shadow: 0 0 3vh rgba(255,255,255,0.1);
         }
 
         /* STOPKA */
         .card-footer {
-            height: 80px;
+            height: 9vh;
             display: flex;
-            border-top: 1px solid var(--border-color);
+            border-top: 0.2vh solid var(--border-color);
             background: #1e293b;
         }
 
@@ -206,24 +252,24 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 5px;
+            padding: 0.5vh;
         }
 
         .footer-item.right {
-            border-left: 1px solid var(--border-color);
+            border-left: 0.2vh solid var(--border-color);
         }
 
         .footer-label {
-            font-size: 0.9rem;
+            font-size: 1.5vh;
             color: #94a3b8;
             font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            margin-bottom: 0.2vh;
         }
 
         .footer-value {
             font-family: 'Chakra Petch', 'Arial', sans-serif;
-            font-size: 2.2rem;
+            font-size: 4vh;
             font-weight: 700;
             color: white;
             line-height: 1;
@@ -239,17 +285,25 @@
             color: rgba(255,255,255,0.9);
         }
 
+        .loading-text {
+            width: 100%; 
+            color: #64748b; 
+            text-align: center; 
+            margin-top: 5vh; 
+            font-size: 3vh;
+        }
+
     </style>
 </head>
 <body>
 
     <header>
-        <div style="width: 250px;">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-blue-900 rounded border border-blue-500">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+        <div>
+            <div class="header-logo-container">
+                <div class="header-logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                 </div>
-                <h1 class="text-2xl font-black text-blue-400 italic">HC REVIEW</h1>
+                <h1 class="header-title">HC REVIEW</h1>
             </div>
         </div>
 
@@ -258,19 +312,17 @@
             <div id="date">Ładowanie...</div>
         </div>
 
-        <div style="width: 250px; text-align: right;">
-            <div class="flex items-center justify-end gap-2">
-                <span class="text-green-400 font-bold text-lg">ONLINE</span>
-                <div style="width: 12px; height: 12px; background-color: #34d399; border-radius: 50%;"></div>
+        <div>
+            <div class="status-container">
+                <span class="status-text">ONLINE</span>
+                <div class="status-dot"></div>
             </div>
         </div>
     </header>
 
     <div class="layout-container">
         <main id="app-container" class="left-panel">
-            <div style="width: 100%; color: #64748b; text-align: center; margin-top: 50px; font-size: 24px;">
-                WCZYTYWANIE DANYCH...
-            </div>
+            <div class="loading-text">WCZYTYWANIE DANYCH...</div>
         </main>
 
         <aside id="contacts-container" class="right-panel">
@@ -281,7 +333,6 @@
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTLj9I25auqf26IBHTeDVVQ4K45_y8lx-kAnJXvVDkSYRacfyT9fWJ6SzOnCxn9SAFzn2Pw-7M3y9Bc/pub?output=csv';
 
-        // LISTA KONTAKTÓW Z OBRAZKA
         const contactsList = [
             { role: "MIK/PUR/TVR Supervisior", phone: "785 558 058" },
             { role: "SSBR / MNT Manager", phone: "667 656 561" },
@@ -293,7 +344,6 @@
 
         function renderContacts() {
             const container = document.getElementById('contacts-container');
-            // Zostawiamy w spokoju nagłówek "Lista Kontaktów", dopisujemy pod nim karty
             contactsList.forEach(contact => {
                 const card = document.createElement('div');
                 card.className = 'contact-card';
@@ -305,7 +355,6 @@
             });
         }
 
-        // ZEGAR
         function updateClockSafe() {
             var now = new Date();
             var hours = now.getHours();
@@ -319,7 +368,6 @@
             document.getElementById('date').innerHTML = days[now.getDay()] + ", " + now.getDate() + " " + months[now.getMonth()];
         }
 
-        // DANE Z CSV
         async function loadData() {
             try {
                 var cacheBuster = Math.floor(Math.random() * 100000);
@@ -334,7 +382,6 @@
         function parseData(csvText) {
             const rows = csvText.split('\n').map(row => row.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
             
-            // Szuka wiersza nagłówkowego
             let headerRowIndex = rows.findIndex(r => r.some(c => c.includes('CPL') || c.includes('TVR')));
             if (headerRowIndex === -1) headerRowIndex = 1; 
 
@@ -382,7 +429,6 @@
             }
         }
 
-        // Zwraca klasę z odpowiednim tłem
         function getAbsenceClass(val) {
             const num = parseInt(val);
             if (isNaN(num)) return 'absence-neutral';
@@ -390,7 +436,6 @@
             return 'absence-bad'; 
         }
 
-        // INICJALIZACJA
         renderContacts();
         setInterval(updateClockSafe, 1000);
         updateClockSafe();
